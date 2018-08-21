@@ -57,24 +57,22 @@ export class AngularJsServiceTemplater {
         const bodyName = bodySchemeRef ? CoreMapper.getNameFromReferenceIfExists(bodySchemeRef) || "bodyObj" : '';
         const parametersName = this.getNotBodyParamsNames(pathDefinition);
         if(bodyName) parametersName.unshift(bodyName)
-        return `
-        // ${pathDefinition.method} ${pathDefinition.url} - ${pathDefinition.schemaResponse ? CoreMapper.getNameFromReferenceIfExists(pathDefinition.schemaResponse) || "any" : ""}
+        return `// ${pathDefinition.method} ${pathDefinition.url} - ${pathDefinition.schemaResponse ? CoreMapper.getNameFromReferenceIfExists(pathDefinition.schemaResponse) || "any" : ""}
         function ${this.getMetodoName(pathDefinition.name)}(${parametersName}) {
             ${this.getRestangularFunctionBody(pathDefinition, bodyName)}
-        };`;
+        }
+        `;
 
     }
 
     getRestangularFunctionBody(pathDefinition: PathDefinition, bodyVariableName: string): string {
-        return `
-            return endpoint${this.getRestangularPaths(pathDefinition)}.${this.getRestangularFinalMethodName(pathDefinition)}(${this.getRestangularFinalParameter(pathDefinition, bodyVariableName)})
-        `
+        return `return endpoint${this.getRestangularPaths(pathDefinition)}.${this.getRestangularFinalMethodName(pathDefinition)}(${this.getRestangularFinalParameter(pathDefinition, bodyVariableName)})`
     }
 
     getRestangularFinalMethodName(pathDefinition: PathDefinition): string{
         if(pathDefinition.method === PathDefinitionHTTPMethod.PUT && pathDefinition.path.requestBody) return 'customPUT'
         if(pathDefinition.method === PathDefinitionHTTPMethod.POST && pathDefinition.path.requestBody) return 'customPOST'
-
+        if(pathDefinition.method === PathDefinitionHTTPMethod.GET && pathDefinition.schemaResponse && DataTypesUtil.getSchemaDataType(pathDefinition.schemaResponse) === DataTypesEnum.ARRAY) return 'getList'
         return pathDefinition.method
     }
 
@@ -97,11 +95,24 @@ export class AngularJsServiceTemplater {
     }
 
 
-    getRestangularFinalParameter(path: PathDefinition, bodyVariableName: string): string {
-        // if(path.method === PathDefinitionHTTPMethod.PUT && bodyVariableName)
+    getRestangularFinalParameter(pathDefinition: PathDefinition, bodyVariableName: string): string {
+        // if(pathDefinition.method === PathDefinitionHTTPMethod.PUT && bodyVariableName)
+        const queryParams = pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'query') as ParameterObject[];
+        const cookieParams = pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'cookie') as ParameterObject[];
+        const headersParams = pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'header') as ParameterObject[];;
+        if(queryParams.length) {
+            if(bodyVariableName){
+                return `${bodyVariableName},${queryParams? `${this.getQueryParamsAsStringfyObj(queryParams)}`: ``} `
+            } else {
+                return `${queryParams? `${this.getQueryParamsAsStringfyObj(queryParams)}`: ``}`
+            }
+        }
         return bodyVariableName
     }
 
+    getQueryParamsAsStringfyObj(queryParams: ParameterObject[]){
+        return`{${queryParams.map(queryParam => `${queryParam.name}:${queryParam.name}`).join(',\n')}}`
+    }
     getRestangularPathParameter(partialPath: string){
         const result = /\{([^}]+)}/g.exec(partialPath)
         if(result){

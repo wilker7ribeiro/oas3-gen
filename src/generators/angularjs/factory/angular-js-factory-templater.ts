@@ -22,7 +22,12 @@ export class AngularJsFactoryTemplater {
             /* @ngInject */
             function ${schemaName}Factory() {
                 function ${schemaName}(){
-                    ${SchemaMapper.instance.schemaPropertiesToArray(schema).map(property => this.getPropertyTemplate(property))}
+                    ${
+                        SchemaMapper.instance
+                        .schemaPropertiesToArray(schema)
+                        .map(property => this.getPropertyTemplate(property))
+                        .join('\n')
+                    }
                 }
                 return ${schemaName};
             }
@@ -45,7 +50,12 @@ export class AngularJsFactoryTemplater {
             /* @ngInject */
             function ${schemaName}Factory(${schemaPaiUnit? schemaPaiUnit.name : ""}) {
                 function ${schemaName}(){
-                    ${SchemaMapper.instance.schemaPropertiesToArray(schema).map(property => this.getPropertyTemplate(property)).join('\n')}
+                    ${
+                        SchemaMapper.instance
+                        .schemaPropertiesToArray(schema)
+                        .map(property => this.getPropertyTemplate(property))
+                        .join('\n')
+                    }
                 }
                 ${schemaPaiUnit ? schemaName+".prototype = new "+schemaPaiUnit.name +"()": ""}
                 return ${schemaName};

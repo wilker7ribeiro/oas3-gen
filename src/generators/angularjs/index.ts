@@ -8,7 +8,7 @@ import { Command, option } from "commander";
 import { CommandConfigurator, CommandFlagConfig } from "../../command-configurator";
 import { AngularJsServiceTemplater } from "./factory/angular-js-service-templater";
 import { PathMapper } from "../../util/path-mapper";
-
+var jsBeautify = require('js-beautify').js_beautify
 
 export class AngularJsGeneratorCommand implements CommandConfigurator {
     comando = 'angularjs'
@@ -51,7 +51,7 @@ export class AngularJsGeneratorCommand implements CommandConfigurator {
                 factoryTemplate = factoryTemplater.getFactoryTemplate(name, schema)
             }
 
-            factoryWriteStream.write(factoryTemplate);
+            factoryWriteStream.write(jsBeautify(factoryTemplate));
             return factoryWriteStream
         })
     }
@@ -64,7 +64,7 @@ export class AngularJsGeneratorCommand implements CommandConfigurator {
 
             let factoryTemplate = serviceTemplater.getServiceTemplate(tagDefinition)
 
-            serviceWriteStream.write(factoryTemplate);
+            serviceWriteStream.write(jsBeautify(factoryTemplate));
             return serviceWriteStream
         })
     }
