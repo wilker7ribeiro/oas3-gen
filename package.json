@@ -19,6 +19,7 @@
     "@types/commander": "^2.12.2",
     "@types/fs-extra": "^5.0.4",
     "@types/glob": "^5.0.35",
-    "@types/node": "^10.5.7"
+    "@types/node": "^10.5.7",
+    "express": "^4.16.3"
   }
 }

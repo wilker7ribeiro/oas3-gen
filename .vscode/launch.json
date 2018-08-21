@@ -10,11 +10,11 @@
             "name": "Launch Program",
             "program": "${workspaceFolder}/dist/index.js",
             "args": [
-                "angularjs",
+                "express",
                 "-f",
                 "${workspaceFolder}/openApi3.json",
                 "-d",
-                "${workspaceFolder}/generated/angularjs"
+                "${workspaceFolder}/generated/express"
             ],
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"

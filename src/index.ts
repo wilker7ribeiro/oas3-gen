@@ -8,6 +8,7 @@ import * as commander from "commander";
 import { SchemaMapper } from './util/schema-mapper';
 import { PathMapper } from './util/path-mapper';
 import { CoreMapper } from './util/core-mapper';
+import { ExpressGeneratorCommand } from './generators/express';
 // console.log(process.argv)
 
 const program: commander.Command = require("commander");
@@ -17,7 +18,8 @@ program.version('0.0.1')
 
 
 const generators: CommandConfigurator[] = [
-    new AngularJsGeneratorCommand()
+    new AngularJsGeneratorCommand(),
+    new ExpressGeneratorCommand()
 ]
 
 const noop = (value: any) => value;

@@ -1,3 +1,5 @@
 node_modules
 dist
-generated
+generated/angularjs/factory
+generated/angularjs/service
+generated/express/service

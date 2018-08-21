@@ -11,5 +11,6 @@ export enum DataTypesEnum {
     DATE,
     DATETIME,
     PASSWORD,
-    OBJECT
+    OBJECT, 
+    ANY
 }
