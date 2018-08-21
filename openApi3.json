@@ -1,1062 +1,2817 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "description": "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.",
-        "version": "1.0.0",
-        "title": "Swagger Petstore",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "email": "apiteam@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        }
+      "description": "Documentação da API REST de BPM engine do MCTIC exposta no barramento de serviços. ",
+      "version": "2.0.0",
+      "title": "BPM REST API"
     },
     "tags": [
-        {
-            "name": "pet",
-            "description": "Everything about your Pets",
-            "externalDocs": {
-                "description": "Find out more",
-                "url": "http://swagger.io"
-            }
-        },
-        {
-            "name": "store",
-            "description": "Access to Petstore orders"
-        },
-        {
-            "name": "user",
-            "description": "Operations about user",
-            "externalDocs": {
-                "description": "Find out more about our store",
-                "url": "http://swagger.io"
-            }
-        }
+      {
+        "name": "Processo",
+        "description": "Serviços para os processos"
+      },
+      {
+        "name": "Tarefa",
+        "description": "Serviços para as tarefas"
+      },
+      {
+        "name": "Variáveis",
+        "description": "Serviços para as variáveis"
+      }
     ],
     "paths": {
-        "/pet": {
-            "post": {
-                "tags": [
-                    "pet"
-                ],
-                "summary": "Add a new pet to the store",
-                "description": "",
-                "operationId": "addPet",
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:pets",
-                            "read:pets"
-                        ]
-                    }
-                ],
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/Pet"
+      "/consulta/processos": {
+        "get": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Obtém processos prontos para execução",
+          "description": "Obtém as definições de processos prontos para execução",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ListaProcessos"
+                  }
                 }
+              }
             },
-            "put": {
-                "tags": [
-                    "pet"
-                ],
-                "summary": "Update an existing pet",
-                "description": "",
-                "operationId": "updatePet",
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Pet not found"
-                    },
-                    "405": {
-                        "description": "Validation exception"
-                    }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:pets",
-                            "read:pets"
-                        ]
-                    }
-                ],
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/Pet"
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
                 }
+              }
             }
-        },
-        "/pet/findByStatus": {
-            "get": {
-                "tags": [
-                    "pet"
-                ],
-                "summary": "Finds Pets by status",
-                "description": "Multiple status values can be provided with comma separated strings",
-                "operationId": "findPetsByStatus",
-                "parameters": [
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "description": "Status values that need to be considered for filter",
-                        "required": true,
-                        "explode": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "available",
-                                    "pending",
-                                    "sold"
-                                ],
-                                "default": "available"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/xml": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Pet"
-                                    }
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Pet"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid status value"
-                    }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:pets",
-                            "read:pets"
-                        ]
-                    }
-                ]
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
             }
-        },
-        "/pet/findByTags": {
-            "get": {
-                "tags": [
-                    "pet"
-                ],
-                "summary": "Finds Pets by tags",
-                "description": "Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-                "operationId": "findPetsByTags",
-                "parameters": [
-                    {
-                        "name": "tags",
-                        "in": "query",
-                        "description": "Tags to filter by",
-                        "required": true,
-                        "explode": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/xml": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Pet"
-                                    }
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Pet"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid tag value"
-                    }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:pets",
-                            "read:pets"
-                        ]
-                    }
-                ],
-                "deprecated": true
-            }
-        },
-        "/pet/{petId}": {
-            "get": {
-                "tags": [
-                    "pet"
-                ],
-                "summary": "Find pet by ID",
-                "description": "Returns a single pet",
-                "operationId": "getPetById",
-                "parameters": [
-                    {
-                        "name": "petId",
-                        "in": "path",
-                        "description": "ID of pet to return",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/xml": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Pet"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Pet"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Pet not found"
-                    }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "pet"
-                ],
-                "summary": "Updates a pet in the store with form data",
-                "description": "",
-                "operationId": "updatePetWithForm",
-                "parameters": [
-                    {
-                        "name": "petId",
-                        "in": "path",
-                        "description": "ID of pet that needs to be updated",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "405": {
-                        "description": "Invalid input"
-                    }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:pets",
-                            "read:pets"
-                        ]
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "description": "Updated name of the pet",
-                                        "type": "string"
-                                    },
-                                    "status": {
-                                        "description": "Updated status of the pet",
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "pet"
-                ],
-                "summary": "Deletes a pet",
-                "description": "",
-                "operationId": "deletePet",
-                "parameters": [
-                    {
-                        "name": "api_key",
-                        "in": "header",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "petId",
-                        "in": "path",
-                        "description": "Pet id to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Pet not found"
-                    }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:pets",
-                            "read:pets"
-                        ]
-                    }
-                ]
-            }
-        },
-        "/pet/{petId}/uploadImage": {
-            "post": {
-                "tags": [
-                    "pet"
-                ],
-                "summary": "uploads an image",
-                "description": "",
-                "operationId": "uploadFile",
-                "parameters": [
-                    {
-                        "name": "petId",
-                        "in": "path",
-                        "description": "ID of pet to update",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:pets",
-                            "read:pets"
-                        ]
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "additionalMetadata": {
-                                        "description": "Additional data to pass to server",
-                                        "type": "string"
-                                    },
-                                    "file": {
-                                        "description": "file to upload",
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/store/inventory": {
-            "get": {
-                "tags": [
-                    "store"
-                ],
-                "summary": "Returns pet inventories by status",
-                "description": "Returns a map of status codes to quantities",
-                "operationId": "getInventory",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "integer",
-                                        "format": "int32"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api_key": []
-                    }
-                ]
-            }
-        },
-        "/store/order": {
-            "post": {
-                "tags": [
-                    "store"
-                ],
-                "summary": "Place an order for a pet",
-                "description": "",
-                "operationId": "placeOrder",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/xml": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Order"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Order"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid Order"
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Order"
-                            }
-                        }
-                    },
-                    "description": "order placed for purchasing the pet",
-                    "required": true
-                }
-            }
-        },
-        "/store/order/{orderId}": {
-            "get": {
-                "tags": [
-                    "store"
-                ],
-                "summary": "Find purchase order by ID",
-                "description": "For valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptions",
-                "operationId": "getOrderById",
-                "parameters": [
-                    {
-                        "name": "orderId",
-                        "in": "path",
-                        "description": "ID of pet that needs to be fetched",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "minimum": 1,
-                            "maximum": 10
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/xml": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Order"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Order"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Order not found"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "store"
-                ],
-                "summary": "Delete purchase order by ID",
-                "description": "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors",
-                "operationId": "deleteOrder",
-                "parameters": [
-                    {
-                        "name": "orderId",
-                        "in": "path",
-                        "description": "ID of the order that needs to be deleted",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "minimum": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Order not found"
-                    }
-                }
-            }
-        },
-        "/user": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Create user",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "createUser",
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/User"
-                            }
-                        }
-                    },
-                    "description": "Created user object",
-                    "required": true
-                }
-            }
-        },
-        "/user/createWithArray": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Creates list of users with given input array",
-                "description": "",
-                "operationId": "createUsersWithArrayInput",
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/UserArray"
-                }
-            }
-        },
-        "/user/createWithList": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Creates list of users with given input array",
-                "description": "",
-                "operationId": "createUsersWithListInput",
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                },
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/UserArray"
-                }
-            }
-        },
-        "/user/login": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Logs user into the system",
-                "description": "",
-                "operationId": "loginUser",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "query",
-                        "description": "The user name for login",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "description": "The password for login in clear text",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "headers": {
-                            "X-Rate-Limit": {
-                                "description": "calls per hour allowed by the user",
-                                "schema": {
-                                    "type": "integer",
-                                    "format": "int32"
-                                }
-                            },
-                            "X-Expires-After": {
-                                "description": "date in UTC when token expires",
-                                "schema": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                }
-                            }
-                        },
-                        "content": {
-                            "application/xml": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid username/password supplied"
-                    }
-                }
-            }
-        },
-        "/user/logout": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Logs out current logged in user session",
-                "description": "",
-                "operationId": "logoutUser",
-                "responses": {
-                    "default": {
-                        "description": "successful operation"
-                    }
-                }
-            }
-        },
-        "/user/{username}": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get user by user name",
-                "description": "",
-                "operationId": "getUserByName",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "path",
-                        "description": "The name that needs to be fetched. Use user1 for testing. ",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/xml": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            },
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid username supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Updated user",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "updateUser",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "path",
-                        "description": "name that need to be updated",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid user supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/User"
-                            }
-                        }
-                    },
-                    "description": "Updated user object",
-                    "required": true
-                }
-            },
-            "delete": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Delete user",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "deleteUser",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "path",
-                        "description": "The name that needs to be deleted",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid username supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            }
+          ]
         }
-    },
-    "externalDocs": {
-        "description": "Find out more about Swagger",
-        "url": "http://swagger.io"
+      },
+      "/consulta/processo/instanciado": {
+        "get": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Obtém um processo em execução",
+          "description": "Obtém os processos intânciados cadastrados de acordo com o id.",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "did",
+              "in": "query",
+              "description": "Identificador do Deployment.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "piid",
+              "in": "query",
+              "description": "Identificador da instância do processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ListaInstanciasProcessosInfo"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/processos/instanciados": {
+        "get": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Obtém processos em execução",
+          "description": "Obtém os processos intânciados cadastrados de acordo com a definição do processo.",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "pid",
+              "in": "query",
+              "description": "Identificador da definição do processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ListaInstanciasProcessosInfo"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/execucao/{deploymentId}/processo/{processDefinition}": {
+        "get": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Obtém os dados referentes a definição do processo",
+          "description": "Obtém os dados referentes a definição do processo",
+          "parameters": [
+            {
+              "name": "deploymentId",
+              "in": "path",
+              "description": "Identificador do Deployment do Processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "processDefinition",
+              "in": "path",
+              "description": "Identificador da Definição do Processo",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaDefinicaoProcesso"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/execucao/{deploymentId}/processo/{processDefinition}/imagem": {
+        "get": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Obtém a imagem SVG referente ao processo informado",
+          "description": "Obtém a imagem SVG referente ao processo informado",
+          "parameters": [
+            {
+              "name": "deploymentId",
+              "in": "path",
+              "description": "Identificador do Deployment do Processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "processDefinition",
+              "in": "path",
+              "description": "Identificador da Definição do Processo",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/execucao/{deploymentId}/processo/{processDefinition}/imagem/{processInstance}": {
+        "get": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Obtém a imagem SVG referente à instância atual do processo informado",
+          "description": "Obtém a imagem SVG referente à instância atual do processo informado",
+          "parameters": [
+            {
+              "name": "deploymentId",
+              "in": "path",
+              "description": "Identificador do Deployment do Processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "processDefinition",
+              "in": "path",
+              "description": "Identificador da Definição do Processo",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "processInstance",
+              "in": "path",
+              "description": "Identificador da Instância do Processo",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/variaveis": {
+        "get": {
+          "tags": [
+            "Variáveis"
+          ],
+          "summary": "Obtém as variáveis de acordo com os filtros",
+          "description": "Obtém as variáveis de acordo com os filtros",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "vid",
+              "in": "query",
+              "description": "Nome da variável",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "vv",
+              "in": "query",
+              "description": "Valor da variável",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ativos",
+              "in": "query",
+              "description": "Processo ativos. Pode assumir o valor S ou N.",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Variavel"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/processo/variaveis": {
+        "get": {
+          "tags": [
+            "Variáveis"
+          ],
+          "summary": "Obtém as variáveis de um processo",
+          "description": "Obtém as variáveis de acordo com os filtros",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "vid",
+              "in": "query",
+              "description": "Nome da variável",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "piid",
+              "in": "query",
+              "description": "Identificador da instância do processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Variavel"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/execucao/processo/variaveis/incluir": {
+        "post": {
+          "tags": [
+            "Variáveis"
+          ],
+          "summary": "Adiciona ou atualiza as variáveis do processo",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "did",
+              "in": "query",
+              "description": "Identificador do Deployment.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "piid",
+              "in": "query",
+              "description": "Identificador da instância do processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "map",
+              "in": "query",
+              "description": "Define o valor de um campo seguindo o formato campo=valor. Exemplo: nome=john.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/execucao/{deploymentId}/processo/{processDefinition}/iniciar": {
+        "post": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Inicializa a execução de um processo",
+          "parameters": [
+            {
+              "name": "deploymentId",
+              "in": "path",
+              "description": "Identificador do Deployment do Processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "processDefinition",
+              "in": "path",
+              "description": "Identificador da Definição do Processo",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "map",
+              "in": "query",
+              "description": "Define o valor de um campo seguindo o formato campo=valor. Exemplo: nome=john.",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaInicioProcesso"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/execucao/{deploymentId}/processo/instancia/{procInstId}/cancelar": {
+        "post": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Cancela um processo em execução",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "deploymentId",
+              "in": "path",
+              "description": "Identificador do Deployment.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "procInstId",
+              "in": "path",
+              "description": "Identificador do Process Instance.",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/total/processos/agrupados": {
+        "post": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Consulta o total de processos separados por nome e status",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaTotalProcessosAgrupados"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ],
+          "requestBody": {
+            "$ref": "#/components/requestBodies/FiltroProcesso"
+          }
+        }
+      },
+      "/consulta/total/processos": {
+        "post": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Consulta o total de processos separados por status",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaTotalProcessos"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ],
+          "requestBody": {
+            "$ref": "#/components/requestBodies/FiltroProcesso"
+          }
+        }
+      },
+      "/consulta/processos/criados": {
+        "post": {
+          "tags": [
+            "Processo"
+          ],
+          "summary": "Consulta todas as instâncias dos processos independentes de status",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaProcessosCriados"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ],
+          "requestBody": {
+            "$ref": "#/components/requestBodies/FiltroProcesso"
+          }
+        }
+      },
+      "/consulta/execucao/tarefa": {
+        "get": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Obtém uma tarefa em execução.",
+          "description": "Obtém a tarefa instanciada de acordo com os filtros.",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "usuario",
+              "in": "query",
+              "description": "Login do usuário que pode receber a tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "tid",
+              "in": "query",
+              "description": "Identificador da Tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ListaTarefasInfo"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/execucao/tarefa/processo": {
+        "get": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Obtém as tarefas em execução por processo",
+          "description": "Obtém as tarefas instanciadas de acordo com os filtros.",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "usuario",
+              "in": "query",
+              "description": "Login do usuário que pode receber a tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "piid",
+              "in": "query",
+              "description": "Identificador da instância do processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ListaTarefasInfo"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/execucao/tarefa/usuario": {
+        "get": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Obtém as tarefas instanciadas no qual o usuário pode visualizar",
+          "description": "Obtém as tarefas instanciadas de acordo com os filtros.",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "usuario",
+              "in": "query",
+              "description": "Login do usuário que pode receber a tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ini",
+              "in": "query",
+              "description": "Index que representa o início do filtro de registro por quantidade",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "fim",
+              "in": "query",
+              "description": "Index que representa o fim do filtro de registro por quantidade",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ListaTarefasUsuario"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/url/tarefa": {
+        "get": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Obtém a URL associada a tarefa em execução.",
+          "description": "Obtém a URL associada a tarefa de acordo com os filtros.",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "tid",
+              "in": "query",
+              "description": "Identificador da Tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "piid",
+              "in": "query",
+              "description": "Identificador do Process Instance.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "usuario",
+              "in": "query",
+              "description": "Login do usuário que vai acessar a tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaURLTarefa"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/tarefa/{tid}/consulta/possiveis/donos": {
+        "get": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Obtém os nomes dos grupos e atores que conseguem executar a tarefa.",
+          "description": "Obtém os nomes dos grupos e atores que conseguem executar a tarefa.",
+          "parameters": [
+            {
+              "name": "tid",
+              "in": "path",
+              "description": "Identificador da Tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS"
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/atual/processo/{idInstanciaProcesso}": {
+        "get": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Obtém a instância da tarefa atual em execução de um processo.",
+          "description": "Obtém a instância da tarefa atual em execução de um processo.",
+          "parameters": [
+            {
+              "name": "idInstanciaProcesso",
+              "in": "path",
+              "description": "Identificador da instância do processo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "{idTarefa}/informacoes": {
+        "get": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Obtém as informações da tarefa.",
+          "description": "Obtém as informações da tarefa.",
+          "parameters": [
+            {
+              "name": "idTarefa",
+              "in": "path",
+              "description": "Identificador da instância da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RetornoVariavelDTO"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "{idTarefa}/variavel/{nomeVariavel}": {
+        "get": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Obtém o valor de uma variável da tarefa.",
+          "description": "Obtém o valor de uma variável da tarefa.",
+          "parameters": [
+            {
+              "name": "idTarefa",
+              "in": "path",
+              "description": "Identificador da instância da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "nomeVariavel",
+              "in": "path",
+              "description": "Nome da variável da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RetornoVariavelDTO"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/tarefa/{idTarefa}/atribuir": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Atribui a tarefa ao usuário autenticado",
+          "parameters": [
+            {
+              "name": "idTarefa",
+              "in": "path",
+              "description": "Identificador da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/tarefa/{idTarefa}/atribuirproxima": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Atribui a próxima tarefa ao usuário autenticado",
+          "parameters": [
+            {
+              "name": "idTarefa",
+              "in": "path",
+              "description": "Identificador da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/tarefa/{idTarefa}/liberar": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Libera a tarefa para ser utilizada por outro usuário",
+          "parameters": [
+            {
+              "name": "idTarefa",
+              "in": "path",
+              "description": "Identificador da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/tarefa/{idTarefa}/delegar": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Atribui a tarefa a um usuário",
+          "parameters": [
+            {
+              "name": "idTarefa",
+              "in": "path",
+              "description": "Identificador da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "idEntidadeAlvo",
+              "in": "query",
+              "description": "Nome de um usuário ou grupo.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/tarefa/{idTarefa}/iniciar": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Inicializa a execução de uma tarefa",
+          "parameters": [
+            {
+              "name": "idTarefa",
+              "in": "path",
+              "description": "Identificador da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "usuario",
+              "in": "query",
+              "description": "Login do usuário que vai iniciar a tarefa.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "piid",
+              "in": "query",
+              "description": "Identificador do Process Instance.",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaIniciarTarefa"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaIniciarTarefa"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/tarefa/{idTarefa}/finalizar": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Finaliza uma tarefa como concluída",
+          "parameters": [
+            {
+              "name": "idTarefa",
+              "in": "path",
+              "description": "Identificador da tarefa.",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "map",
+              "in": "query",
+              "description": "Define o valor de um campo seguindo o formato campo=valor. Exemplo: nome=john.",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/consulta/total/tarefas/agrupadas": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Consulta o total de tarefas separados por nome e status",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaTotalTarefasAgrupadas"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ],
+          "requestBody": {
+            "$ref": "#/components/requestBodies/FiltroTarefa"
+          }
+        }
+      },
+      "/consulta/total/tarefas": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Consulta o total de tarefas separados por status",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaTotalTarefas"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ],
+          "requestBody": {
+            "$ref": "#/components/requestBodies/FiltroTarefa"
+          }
+        }
+      },
+      "/consulta/tarefas/criadas": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Consulta todas as instâncias das tarefas independentes de status",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaTarefasCriadas"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ],
+          "requestBody": {
+            "$ref": "#/components/requestBodies/FiltroTarefa"
+          }
+        }
+      },
+      "/consulta/tarefas/historico/{idInstanciaProcesso}": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Consulta o histórico das instâncias das tarefas do processo informado",
+          "parameters": [
+            {
+              "name": "idInstanciaProcesso",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RespostaTarefasCriadas"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ]
+        }
+      },
+      "/variavel": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Consulta todas as instâncias das tarefas por variáveis",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ListaTarefasInfo"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VariavelTarefaDTO"
+                }
+              }
+            },
+            "required": true
+          }
+        }
+      },
+      "/permissao/execucao": {
+        "post": {
+          "tags": [
+            "Tarefa"
+          ],
+          "summary": "Consulta a permissão de execução para uma atividade",
+          "parameters": [
+            {
+              "name": "ticket",
+              "in": "query",
+              "description": "Proxy ticket válido",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "SUCCESS",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PermissaoPotentialUsersDTO"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "FAILED",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Resposta"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "APIKeyQueryParam": [
+  
+              ]
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiltroPotentialUsersDTO"
+                }
+              }
+            },
+            "required": true
+          }
+        }
+      }
     },
     "servers": [
-        {
-            "url": "http://petstore.swagger.io/v2"
-        }
+      {
+        "url": "https://esb.hml.mctic.gov.br/bpm/api/v2"
+      }
     ],
     "components": {
-        "requestBodies": {
-            "UserArray": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/components/schemas/User"
-                            }
-                        }
-                    }
-                },
-                "description": "List of user object",
-                "required": true
-            },
-            "Pet": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Pet"
-                        }
-                    },
-                    "application/xml": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Pet"
-                        }
-                    }
-                },
-                "description": "Pet object that needs to be added to the store",
-                "required": true
+      "requestBodies": {
+        "FiltroTarefa": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FiltroTarefa"
+              }
             }
+          },
+          "required": true
         },
-        "securitySchemes": {
-            "petstore_auth": {
-                "type": "oauth2",
-                "flows": {
-                    "implicit": {
-                        "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
-                        "scopes": {
-                            "write:pets": "modify pets in your account",
-                            "read:pets": "read your pets"
-                        }
-                    }
-                }
-            },
-            "api_key": {
-                "type": "apiKey",
-                "name": "api_key",
-                "in": "header"
+        "FiltroProcesso": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FiltroProcesso"
+              }
             }
-        },
-        "schemas": {
-            "Order": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "petId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "quantity": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "shipDate": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "status": {
-                        "type": "string",
-                        "description": "Order Status",
-                        "enum": [
-                            "placed",
-                            "approved",
-                            "delivered"
-                        ]
-                    },
-                    "complete": {
-                        "type": "boolean",
-                        "default": false
-                    }
-                },
-                "xml": {
-                    "name": "Order"
-                }
-            },
-            "User": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "firstName": {
-                        "type": "string"
-                    },
-                    "lastName": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "password": {
-                        "type": "string"
-                    },
-                    "phone": {
-                        "type": "string"
-                    },
-                    "userStatus": {
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "User Status"
-                    }
-                },
-                "xml": {
-                    "name": "User"
-                }
-            },
-            "Category": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "xml": {
-                    "name": "Category"
-                }
-            },
-            "Tag": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "xml": {
-                    "name": "Tag"
-                }
-            },
-            "Pet": {
-                "type": "object",
-                "required": [
-                    "name",
-                    "photoUrls"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "category": {
-                        "$ref": "#/components/schemas/Category"
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "doggie"
-                    },
-                    "photoUrls": {
-                        "type": "array",
-                        "xml": {
-                            "name": "photoUrl",
-                            "wrapped": true
-                        },
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "tags": {
-                        "type": "array",
-                        "xml": {
-                            "name": "tag",
-                            "wrapped": true
-                        },
-                        "items": {
-                            "$ref": "#/components/schemas/Tag"
-                        }
-                    },
-                    "status": {
-                        "type": "string",
-                        "description": "pet status in the store",
-                        "enum": [
-                            "available",
-                            "pending",
-                            "sold"
-                        ]
-                    }
-                },
-                "xml": {
-                    "name": "Pet"
-                }
-            },
-            "ApiResponse": {
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "type": {
-                        "type": "string"
-                    },
-                    "message": {
-                        "type": "string"
-                    }
-                }
-            }
+          },
+          "required": true
         }
+      },
+      "securitySchemes": {
+        "APIKeyQueryParam": {
+          "type": "apiKey",
+          "in": "query",
+          "name": "ticket"
+        }
+      },
+      "schemas": {
+        "RespostaURLTarefa": {
+          "properties": {
+            "resposta": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/URLTarefa"
+              }
+            }
+          }
+        },
+        "URLTarefa": {
+          "properties": {
+            "url": {
+              "type": "string"
+            }
+          }
+        },
+        "RespostaIniciarTarefa": {
+          "properties": {
+            "resposta": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/IniciarTarefa"
+              }
+            }
+          }
+        },
+        "Resposta": {
+          "properties": {
+            "resposta": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Status"
+              }
+            }
+          }
+        },
+        "Status": {
+          "properties": {
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "IniciarTarefa": {
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        },
+        "RespostaDefinicaoProcesso": {
+          "properties": {
+            "resposta": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Processo"
+              }
+            }
+          }
+        },
+        "ListaProcessos": {
+          "properties": {
+            "listaProcessos": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Processo"
+              }
+            }
+          }
+        },
+        "Processo": {
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "nome": {
+              "type": "string"
+            },
+            "versao": {
+              "type": "string"
+            },
+            "nomePacote": {
+              "type": "string"
+            },
+            "idDeploy": {
+              "type": "string"
+            },
+            "variaveis": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/VariavelInfo"
+              }
+            }
+          }
+        },
+        "VariavelInfo": {
+          "properties": {
+            "nome": {
+              "type": "string"
+            }
+          }
+        },
+        "ListaInstanciasProcessosInfo": {
+          "properties": {
+            "listaInstanciasProcessosInfo": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/InstanciaProcessoInfo"
+              }
+            }
+          }
+        },
+        "InstanciaProcessoInfo": {
+          "properties": {
+            "instancia-processo": {
+              "$ref": "#/components/schemas/InstanciaProcesso"
+            }
+          }
+        },
+        "InstanciaProcesso": {
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "estado": {
+              "type": "integer"
+            },
+            "idInstanciaProcessoPai": {
+              "type": "integer"
+            },
+            "idProcesso": {
+              "type": "string"
+            }
+          }
+        },
+        "Variavel": {
+          "properties": {
+            "variaveis": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ValorVariavel"
+              }
+            }
+          }
+        },
+        "ValorVariavel": {
+          "properties": {
+            "idInstanciaProcesso": {
+              "type": "integer"
+            },
+            "idProcesso": {
+              "type": "string"
+            },
+            "data": {
+              "type": "string"
+            },
+            "idInstanciaVariavel": {
+              "type": "string"
+            },
+            "idVariavel": {
+              "type": "string"
+            },
+            "valor": {
+              "type": "string"
+            },
+            "valorAnterior": {
+              "type": "string"
+            },
+            "idExterno": {
+              "type": "string"
+            }
+          }
+        },
+        "ListaTarefasInfo": {
+          "properties": {
+            "listaTarefaInfo": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TarefaInfo"
+              }
+            }
+          },
+          "xml": {
+            "name": "query-task-result"
+          }
+        },
+        "TarefaInfo": {
+          "properties": {
+            "idInstanciaProcesso": {
+              "type": "integer"
+            },
+            "resumosTarefa": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ResumoTarefa"
+              }
+            }
+          }
+        },
+        "ResumoTarefa": {
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "nome": {
+              "type": "string"
+            },
+            "assunto": {
+              "type": "string"
+            },
+            "descricaoUrl": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "prioridade": {
+              "type": "integer"
+            },
+            "ignoravel": {
+              "type": "boolean"
+            },
+            "atualDono": {
+              "type": "string"
+            },
+            "criadoPor": {
+              "type": "string"
+            },
+            "criadoEm": {
+              "type": "integer"
+            },
+            "tempoAtivacao": {
+              "type": "integer"
+            },
+            "idInstanciaProcesso": {
+              "type": "integer"
+            },
+            "idProcesso": {
+              "type": "string"
+            },
+            "idSessaoProcesso": {
+              "type": "integer"
+            },
+            "deploymentId": {
+              "type": "string"
+            },
+            "resumoBreveTarefa": {
+              "type": "boolean"
+            },
+            "idPai": {
+              "type": "integer"
+            }
+          }
+        },
+        "RespostaInicioProcesso": {
+          "properties": {
+            "resposta": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RespostaProcesso"
+              }
+            }
+          }
+        },
+        "RespostaProcesso": {
+          "properties": {
+            "idInstancia": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string"
+            },
+            "idProcessoPai": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "indice": {
+              "type": "string"
+            },
+            "idDefinicaoProcesso": {
+              "type": "string"
+            },
+            "tiposEvento": {
+              "type": "string"
+            }
+          }
+        },
+        "ListaTarefasUsuario": {
+          "properties": {
+            "listaTarefaInfo": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TarefaUsuario"
+              }
+            }
+          }
+        },
+        "TarefaUsuario": {
+          "properties": {
+            "resumosTarefa": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ResumoTarefaUsuario"
+              }
+            }
+          }
+        },
+        "ResumoTarefaUsuario": {
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "nome": {
+              "type": "string"
+            },
+            "assunto": {
+              "type": "string"
+            },
+            "descricaoUrl": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "prioridade": {
+              "type": "integer"
+            },
+            "ignoravel": {
+              "type": "boolean"
+            },
+            "criadoPor": {
+              "type": "string"
+            },
+            "criadoEm": {
+              "type": "integer"
+            },
+            "tempoAtivacao": {
+              "type": "integer"
+            },
+            "idInstanciaProcesso": {
+              "type": "integer"
+            },
+            "idProcesso": {
+              "type": "string"
+            },
+            "idSessaoProcesso": {
+              "type": "integer"
+            },
+            "deploymentId": {
+              "type": "string"
+            },
+            "resumoBreveTarefa": {
+              "type": "boolean"
+            },
+            "idPai": {
+              "type": "integer"
+            },
+            "informacoesTarefa": {
+              "type": "string"
+            }
+          }
+        },
+        "FiltroProcesso": {
+          "properties": {
+            "idInstancia": {
+              "type": "integer"
+            },
+            "status": {
+              "type": "string"
+            },
+            "nomeUsuario": {
+              "type": "string"
+            },
+            "intervaloInicio": {
+              "type": "string",
+              "format": "date"
+            },
+            "intervaloFim": {
+              "type": "string",
+              "format": "date"
+            },
+            "definicaoProcessos": {
+              "type": "string"
+            }
+          }
+        },
+        "RespostaTotalProcessosAgrupados": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "nomeProcesso": {
+                "type": "string"
+              },
+              "totalInstancias": {
+                "type": "integer"
+              },
+              "totalInstanciasAtivas": {
+                "type": "integer"
+              },
+              "totalInstanciasCompletadas": {
+                "type": "integer"
+              },
+              "totalInstanciasPendentes": {
+                "type": "integer"
+              },
+              "totalInstanciasSuspensas": {
+                "type": "integer"
+              },
+              "totalInstanciasCanceladas": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "RespostaTotalProcessos": {
+          "properties": {
+            "totalInstancias": {
+              "type": "integer"
+            },
+            "totalInstanciasAtivas": {
+              "type": "integer"
+            },
+            "totalInstanciasCompletadas": {
+              "type": "integer"
+            },
+            "totalInstanciasPendentes": {
+              "type": "integer"
+            },
+            "totalInstanciasSuspensas": {
+              "type": "integer"
+            },
+            "totalInstanciasCanceladas": {
+              "type": "integer"
+            }
+          }
+        },
+        "RespostaProcessosCriados": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "nome": {
+                "type": "string"
+              },
+              "idProcessDefinition": {
+                "type": "string"
+              },
+              "dataInicio": {
+                "type": "string",
+                "format": "date"
+              },
+              "dataFim": {
+                "type": "string",
+                "format": "date"
+              },
+              "versao": {
+                "type": "string"
+              },
+              "usuario": {
+                "type": "string"
+              },
+              "duracao": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "FiltroTarefa": {
+          "properties": {
+            "idInstanciaProcesso": {
+              "type": "integer"
+            },
+            "status": {
+              "type": "string"
+            },
+            "nomeUsuarioProprietario": {
+              "type": "string"
+            },
+            "intervaloInicio": {
+              "type": "string",
+              "format": "date"
+            },
+            "intervaloFim": {
+              "type": "string",
+              "format": "date"
+            },
+            "nomeTarefas": {
+              "type": "string"
+            }
+          }
+        },
+        "RespostaTotalTarefasAgrupadas": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "nomeTarefa": {
+                "type": "string"
+              },
+              "totalTarefas": {
+                "type": "integer"
+              },
+              "totalTarefasProntas": {
+                "type": "integer"
+              },
+              "totalTarefasReservadas": {
+                "type": "integer"
+              },
+              "totalTarefasEmProgresso": {
+                "type": "integer"
+              },
+              "totalTarefasFinalizadas": {
+                "type": "integer"
+              },
+              "totalTarefasComFalha": {
+                "type": "integer"
+              },
+              "totalTarefasComErro": {
+                "type": "integer"
+              },
+              "totalTarefasCanceladas": {
+                "type": "integer"
+              },
+              "totalTarefasPuladas": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "RespostaTotalTarefas": {
+          "properties": {
+            "totalTarefas": {
+              "type": "integer"
+            },
+            "totalTarefasProntas": {
+              "type": "integer"
+            },
+            "totalTarefasReservadas": {
+              "type": "integer"
+            },
+            "totalTarefasEmProgresso": {
+              "type": "integer"
+            },
+            "totalTarefasFinalizadas": {
+              "type": "integer"
+            },
+            "totalTarefasComFalha": {
+              "type": "integer"
+            },
+            "totalTarefasComErro": {
+              "type": "integer"
+            },
+            "totalTarefasCanceladas": {
+              "type": "integer"
+            },
+            "totalTarefasPuladas": {
+              "type": "integer"
+            }
+          }
+        },
+        "RespostaTarefasCriadas": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "nome": {
+                "type": "string"
+              },
+              "dataInicio": {
+                "type": "string",
+                "format": "date"
+              },
+              "dataFim": {
+                "type": "string",
+                "format": "date"
+              },
+              "status": {
+                "type": "string"
+              },
+              "usuario": {
+                "type": "string"
+              },
+              "duracao": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "VariavelTarefaDTO": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "nomeVariavel": {
+                "type": "string"
+              },
+              "valorVariavel": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "FiltroPotentialUsersDTO": {
+          "properties": {
+            "loginUsuario": {
+              "type": "string"
+            },
+            "idTarefa": {
+              "type": "string"
+            }
+          }
+        },
+        "PermissaoPotentialUsersDTO": {
+          "properties": {
+            "permissao": {
+              "type": "boolean"
+            }
+          }
+        },
+        "RetornoVariavelDTO": {
+          "properties": {
+            "valor": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
-}
+  }

@@ -39,11 +39,15 @@ export class AngularJsServiceTemplater {
     }
 
     getAllMetodosName(tagDefinition: TagDefinition): string[] {
-        return tagDefinition.paths.map(pathDefinition => this.getMetodoName(pathDefinition.name));
+        return tagDefinition.paths.map(pathDefinition => this.getMetodoName(pathDefinition));
     }
 
-    getMetodoName(string: string) {
-        return StringUtil.dashToCamelCase(string);
+    urlToMetodoName(url:string){
+        return url.replace(/\/([a-z])/g, function (g) { return g[1].toUpperCase(); }).replace(/(\#|\{|\}|\/)/g, "");
+    }
+    getMetodoName(pathDefinition: PathDefinition) {
+        if(pathDefinition.name) return StringUtil.dashToCamelCase(pathDefinition.name);
+        return this.urlToMetodoName(pathDefinition.url)
     }
 
     getTemplateForApi(pathDefinition: PathDefinition): string {
@@ -58,7 +62,7 @@ export class AngularJsServiceTemplater {
         const parametersName = this.getNotBodyParamsNames(pathDefinition);
         if(bodyName) parametersName.unshift(bodyName)
         return `// ${pathDefinition.method} ${pathDefinition.url} - ${pathDefinition.schemaResponse ? CoreMapper.getNameFromReferenceIfExists(pathDefinition.schemaResponse) || "any" : ""}
-        function ${this.getMetodoName(pathDefinition.name)}(${parametersName}) {
+        function ${this.getMetodoName(pathDefinition)}(${parametersName}) {
             ${this.getRestangularFunctionBody(pathDefinition, bodyName)}
         }
         `;
