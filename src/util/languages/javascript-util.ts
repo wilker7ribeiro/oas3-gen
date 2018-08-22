@@ -8,7 +8,7 @@ export class JavascriptUtil {
 
     static getMockedValue(schemaRef: SchemaObject | ReferenceObject, propertyName: string = "", maxDeepLevel: number = 3, actualDeepLevel: number = 0): any {
         const propName = propertyName || CoreMapper.getNameFromReferenceIfExists(schemaRef)
-        const schema = CoreMapper.instance.getObjectMaybeRef(schemaRef);
+        const schema = SchemaMapper.instance.getFullSchema(schemaRef)
         const datatype = DataTypesUtil.getSchemaDataType(schema);
         switch (datatype) {
             case DataTypesEnum.ARRAY:
@@ -39,7 +39,7 @@ export class JavascriptUtil {
                 SchemaMapper.instance
                     .schemaPropertiesRefToArray(schema)
                     .forEach(({ name, schemaRef }) => {
-                        obj[name] = this.getMockedValue(schema, name, maxDeepLevel, actualDeepLevel + 1);
+                        obj[name] = this.getMockedValue(schemaRef, name, maxDeepLevel, actualDeepLevel + 1);
                     })
                 return obj;
             default:
