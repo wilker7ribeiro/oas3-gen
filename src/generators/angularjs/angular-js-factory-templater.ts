@@ -10,7 +10,7 @@ export class AngularJsFactoryTemplater {
     }
 
     getFactoryTemplate(schemaName: string){
-        this.schema = SchemaMapper.instance.getFullSchema(this.schema, true);
+        this.schema = SchemaMapper.instance.getFullSchema(this.schema);
         return `;(function() {
             'use strict';
             /**

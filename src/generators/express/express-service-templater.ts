@@ -3,6 +3,7 @@ import { StringUtil } from "../../util/string-util";
 import { ParameterObject } from "openapi3-ts";
 import { DataTypesUtil } from "../../util/data-types-util";
 import { JavascriptUtil } from "../../util/languages/javascript-util";
+import { SchemaMapper } from "../../util/schema-mapper";
 
 export class ExpressServiceTemplater {
 
@@ -23,9 +24,10 @@ export class ExpressServiceTemplater {
     }
 
     getExpressFunctionTemplateForPath(pathDefinition: PathDefinition) {
-        const responseBody = pathDefinition.schemaResponse;
+        let responseBody = pathDefinition.schemaResponse
         let value;
         if(responseBody){
+            responseBody = SchemaMapper.instance.getFullSchema(responseBody);
             value = JavascriptUtil.getMockedValue(responseBody, '', this.options.deepLevel || 3);
         }
         return `app.${pathDefinition.method}("${this.getExpressUrl(pathDefinition)}", (req, res, next) => {

@@ -49,7 +49,7 @@ export class AngularIoServiceTemplater {
         return Array.from<string>((this.tagDefinition as any).referenceList).filter(name => !TypescriptUtil.isPrimitiveTipagem(name));
     }
     getMetodoName(pathDefinition: PathDefinition) {
-        if(pathDefinition.name) return StringUtil.dashToCamelCase(pathDefinition.name);
+        if(pathDefinition.name) return StringUtil.dashToCamelCase(pathDefinition.name.replace(/\s/g, ''));
         return this.urlToMetodoName(pathDefinition.url)
     }
     urlToMetodoName(url: string) {

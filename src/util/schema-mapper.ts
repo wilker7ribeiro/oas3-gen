@@ -27,7 +27,7 @@ export class SchemaMapper {
         return this.openApiObj.components!.schemas![schemaName]
     }
 
-    getFullSchema(schemaRef: SchemaObject | ReferenceObject, followReferences: boolean){
+    getFullSchema(schemaRef: SchemaObject | ReferenceObject, followReferences: boolean = true){
         const schema = CoreMapper.instance.getObjectMaybeRef(schemaRef);
         if(schema.allOf && schema.allOf.length){
             schema.allOf.forEach(schemaPaiRef => {

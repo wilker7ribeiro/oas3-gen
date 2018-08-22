@@ -17,11 +17,23 @@ export class TypescriptEntityTemplater {
     }
 
     getEntityTemplate(schemaName: string) {
+        if(this.options.inherance) {
+            this.schema = SchemaMapper.instance.getFullSchema(this.schema, false);
+        } else {
+            this.schema = SchemaMapper.instance.getFullSchema(this.schema, true);
+        }
+
         let template = ''
         SchemaMapper.instance.getNamesSchemasFilhosUtilizados(this.schema).forEach(({name}) => {
-            template +=`import { ${name} } from './${name}';\n\n`
+            template +=`import { ${name} } from './${name}';\n`
         });
-        template += `export class ${schemaName.replace(" ", "")} {\n`
+        const schmePaiResult = SchemaMapper.instance.getSchemasPai(this.schema)[0];
+        if(this.options.inherance && schmePaiResult){
+            template +=`import { ${schmePaiResult.name} } from './${schmePaiResult.name}';\n`
+            template += `export class ${schemaName.replace(" ", "")} extends ${schmePaiResult.name} {\n`
+        } else {
+            template += `export class ${schemaName.replace(" ", "")} {\n`
+        }
         template += this.getPropriedadesTemplates();
         return template+'\}';
     }

@@ -47,7 +47,11 @@ export class PathMapper {
             })
             .reduce((acm, cur) => acm.concat(...cur), [])
             .forEach(pathDefinition => {
-                pathDefinition.path.tags!.forEach(tag => this.getTagByName(tag).paths.push(pathDefinition))
+                if(pathDefinition.path.tags!.length) {
+                    pathDefinition.path.tags!.forEach(tag => this.getOrCreateTagByName(tag).paths.push(pathDefinition))
+                } else {
+                    this.getOrCreateTagByName('DefaultNoTag').paths.push(pathDefinition)
+                }
             })
 
 
@@ -58,9 +62,13 @@ export class PathMapper {
         return CoreMapper.instance.getObjectMaybeRef(pathParam)
     }
 
-    getTagByName(tagName: string): TagDefinition {
+    private getOrCreateTagByName(tagName: string): TagDefinition {
         const tag = this.tagsDefinition.find(tag => tag.name === tagName)
         if (tag) return tag;
+        return this.createTag(tagName);
+    }
+
+    createTag(tagName: string) : TagDefinition{
         const novaTag: TagDefinition = {
             name: tagName,
             paths: []
