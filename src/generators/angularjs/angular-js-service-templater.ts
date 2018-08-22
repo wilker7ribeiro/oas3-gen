@@ -5,6 +5,7 @@ import { SchemaMapper } from "../../util/schema-mapper";
 import { CoreMapper } from "../../util/core-mapper";
 import { DataTypesUtil } from "../../util/data-types-util";
 import { DataTypesEnum } from "../../util/data-types-enum";
+import { TypescriptUtil } from "../../util/languages/typescript-util";
 
 export class AngularJsServiceTemplater {
     constructor(public tagDefinition: TagDefinition) {}
@@ -61,7 +62,7 @@ export class AngularJsServiceTemplater {
         const bodyName = bodySchemeRef ? CoreMapper.getNameFromReferenceIfExists(bodySchemeRef) || "bodyObj" : '';
         const parametersName = this.getNotBodyParamsNames(pathDefinition);
         if(bodyName) parametersName.unshift(bodyName)
-        return `// ${pathDefinition.method} ${pathDefinition.url} - ${pathDefinition.schemaResponse ? CoreMapper.getNameFromReferenceIfExists(pathDefinition.schemaResponse) || "any" : ""}
+        return `// ${pathDefinition.method} ${pathDefinition.url} -> ${pathDefinition.schemaResponse ? TypescriptUtil.getTipagemForSchema(pathDefinition.schemaResponse) || "any" : ""}
         function ${this.getMetodoName(pathDefinition)}(${parametersName}) {
             ${this.getRestangularFunctionBody(pathDefinition, bodyName)}
         }
