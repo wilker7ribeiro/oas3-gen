@@ -3,13 +3,14 @@ import { SchemaMapper } from "../../util/schema-mapper";
 import { JavascriptUtil } from "../../util/languages/javascript-util";
 
 export class AngularJsFactoryTemplater {
+    constructor(private schema: SchemaObject){}
 
-    getFileName(schemaName: string, schema: SchemaObject): string{
+    getFileName(schemaName: string): string{
         return `${schemaName.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase()}-factory.js`
     }
 
-    getFactoryTemplate(schemaName: string, schema: SchemaObject){
-        schema = SchemaMapper.instance.getFullSchema(schema, true);
+    getFactoryTemplate(schemaName: string){
+        this.schema = SchemaMapper.instance.getFullSchema(this.schema, true);
         return `;(function() {
             'use strict';
             /**
@@ -24,7 +25,7 @@ export class AngularJsFactoryTemplater {
                 function ${schemaName}(){
                     ${
                         SchemaMapper.instance
-                        .schemaPropertiesRefToArray(schema)
+                        .schemaPropertiesRefToArray(this.schema)
                         .map(property => this.getPropertyTemplate(property))
                         .join('\n')
                     }
@@ -34,9 +35,9 @@ export class AngularJsFactoryTemplater {
         }());`
     }
 
-    getFactoryExtendingTemplate(schemaName: string, schema: SchemaObject){
-        schema = SchemaMapper.instance.getFullSchema(schema, false);
-        const schemaPaiUnit  = SchemaMapper.instance.getSchemasPai(schema).filter(schemapai => schemapai.isReference)[0];
+    getFactoryExtendingTemplate(schemaName: string){
+        this.schema = SchemaMapper.instance.getFullSchema(this.schema, false);
+        const schemaPaiUnit  = SchemaMapper.instance.getSchemasPai(this.schema).filter(schemapai => schemapai.isReference)[0];
     
         return `;(function() {
             'use strict';
@@ -52,7 +53,7 @@ export class AngularJsFactoryTemplater {
                 function ${schemaName}(){
                     ${
                         SchemaMapper.instance
-                        .schemaPropertiesRefToArray(schema)
+                        .schemaPropertiesRefToArray(this.schema)
                         .map(property => this.getPropertyTemplate(property))
                         .join('\n')
                     }

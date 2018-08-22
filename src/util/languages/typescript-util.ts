@@ -5,7 +5,11 @@ import { CoreMapper } from "../core-mapper";
 
 export class TypescriptUtil {
 
-    static getTipagemForSchema(schemaRef: SchemaObject | ReferenceObject): string {
+    static isPrimitiveTipagem(nomeTipagem: string): boolean{
+       return  ['any', 'string', 'boolean', 'number', 'Date'].includes(nomeTipagem);
+    }
+    static getTipagemForSchema(schemaRef: SchemaObject | ReferenceObject| undefined): string {
+        if(!schemaRef) return 'any'
         let typeName = CoreMapper.getNameFromReferenceIfExists(schemaRef);
         if(typeName) {
             return typeName

@@ -1,5 +1,7 @@
 import { OpenAPIObject, SchemaObject, ReferenceObject } from "openapi3-ts";
 import { CoreMapper } from "./core-mapper";
+import { DataTypesUtil } from "./data-types-util";
+import { DataTypesEnum } from "./data-types-enum";
 
 export class SchemaMapper {
 
@@ -48,6 +50,29 @@ export class SchemaMapper {
             }
            
         });
+    }
+
+
+    getNamesSchemasFilhosUtilizados(schemaPai: SchemaObject | ReferenceObject) {
+        var schemasUtilizados: {name: string, schemaRef: SchemaObject | ReferenceObject}[] = [];
+        SchemaMapper.instance.schemaPropertiesRefToArray(schemaPai)
+        .forEach(({name, schemaRef}) => {
+            const refName =  CoreMapper.getNameFromReferenceIfExists(schemaRef);
+            if(refName) return schemasUtilizados.push({
+                name: refName,
+                schemaRef
+            })
+
+            const schema = CoreMapper.instance.getObjectMaybeRef(schemaRef);
+            if(DataTypesUtil.getSchemaDataType(schema) === DataTypesEnum.ARRAY){
+                const typeName = CoreMapper.getNameFromReferenceIfExists(schema.items);
+                if(typeName) return schemasUtilizados.push({
+                    name: typeName,
+                    schemaRef: schema.items!
+                })
+            }
+        })
+        return schemasUtilizados;
     }
 
     extendSchemaProperties(schemaRef: SchemaObject | ReferenceObject, schemaPaiRef: SchemaObject | ReferenceObject): SchemaObject {

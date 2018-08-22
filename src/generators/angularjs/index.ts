@@ -40,15 +40,15 @@ export class AngularJsGeneratorCommand implements CommandConfigurator {
     }
 
     gerarFactory(options: any) {
-        const factoryTemplater = new AngularJsFactoryTemplater();
         return SchemaMapper.instance.getAllSchemasAsArray().map(({ name, schema }) => {
-            const fileName = factoryTemplater.getFileName(name, schema);
+            const factoryTemplater = new AngularJsFactoryTemplater(schema);
+            const fileName = factoryTemplater.getFileName(name);
             const factoryWriteStream = createWriteStream(path.resolve(options.dist, 'factory', fileName))
             let factoryTemplate
             if (options.inherance) {
-                factoryTemplate = factoryTemplater.getFactoryExtendingTemplate(name, schema)
+                factoryTemplate = factoryTemplater.getFactoryExtendingTemplate(name)
             } else {
-                factoryTemplate = factoryTemplater.getFactoryTemplate(name, schema)
+                factoryTemplate = factoryTemplater.getFactoryTemplate(name)
             }
 
             factoryWriteStream.write(jsBeautify(factoryTemplate));
@@ -57,12 +57,12 @@ export class AngularJsGeneratorCommand implements CommandConfigurator {
     }
 
     gerarSevices(options: any) {
-        const serviceTemplater = new AngularJsServiceTemplater();
         return PathMapper.instance.tagsDefinition.map(tagDefinition => {
-            const fileName = serviceTemplater.getFileName(tagDefinition);
+            const serviceTemplater = new AngularJsServiceTemplater(tagDefinition);
+            const fileName = serviceTemplater.getFileName();
             const serviceWriteStream = createWriteStream(path.resolve(options.dist, 'service', fileName))
 
-            let factoryTemplate = serviceTemplater.getServiceTemplate(tagDefinition)
+            let factoryTemplate = serviceTemplater.getServiceTemplate()
 
             serviceWriteStream.write(jsBeautify(factoryTemplate));
             return serviceWriteStream

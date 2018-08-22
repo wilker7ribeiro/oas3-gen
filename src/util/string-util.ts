@@ -9,4 +9,8 @@ export class StringUtil {
     static camelCaseToDash(string: string): string {
         return string.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase()
     }
+
+    static uperToLowerCamelCase(camelCase: string): string {
+        return camelCase.charAt(0).toLowerCase() + camelCase.slice(1);
+    }
 }

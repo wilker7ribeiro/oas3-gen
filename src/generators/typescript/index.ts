@@ -30,15 +30,18 @@ export class TypescriptGeneratorCommand implements CommandConfigurator {
     }
 
     gerarEntitys(options: any) {
-        const entityTemplater = new TypescriptEntityTemplater(options);
         return SchemaMapper.instance.getAllSchemasAsArray().map(({name, schema}) => {
-            const fileName = entityTemplater.getFileName(name, schema);
+            const entityTemplater = new TypescriptEntityTemplater(options, schema);
+            const fileName = entityTemplater.getFileName(name);
             const entityWriteStream = createWriteStream(resolve(options.dist, 'entity', fileName))
 
-            let entityTemplate = entityTemplater.getEntityTemplate(name, schema)
+            let entityTemplate = entityTemplater.getEntityTemplate(name)
 
             entityWriteStream.write(jsBeautify(entityTemplate, {
+                "preserve_newlines": true,
+                "brace_style": "collapse-preserve-inline",
                 "max_preserve_newlines": 2
+
             }));
             return entityWriteStream
         })

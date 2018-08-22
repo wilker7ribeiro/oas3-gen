@@ -9,6 +9,7 @@ import { PathMapper } from './util/path-mapper';
 import { CoreMapper } from './util/core-mapper';
 import { ExpressGeneratorCommand } from './generators/express';
 import { TypescriptGeneratorCommand } from './generators/typescript';
+import { AngularIoGeneratorCommand } from './generators/angulario';
 // console.log(process.argv)
 
 const program: commander.Command = require("commander");
@@ -18,6 +19,7 @@ program.version('0.0.1')
 
 
 const generators: CommandConfigurator[] = [
+    new AngularIoGeneratorCommand(),
     new AngularJsGeneratorCommand(),
     new ExpressGeneratorCommand(),
     new TypescriptGeneratorCommand()

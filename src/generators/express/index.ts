@@ -29,12 +29,12 @@ export class ExpressGeneratorCommand implements CommandConfigurator {
     }
 
     gerarMocks(options: any) {
-        const serviceTemplater = new ExpressServiceTemplater(options);
         return PathMapper.instance.tagsDefinition.map(tagDefinition => {
-            const fileName = serviceTemplater.getFileName(tagDefinition);
+            const serviceTemplater = new ExpressServiceTemplater(options, tagDefinition);
+            const fileName = serviceTemplater.getFileName();
             const serviceWriteStream = createWriteStream(resolve(options.dist, 'service', fileName))
 
-            let factoryTemplate = serviceTemplater.getServiceTemplate(tagDefinition)
+            let factoryTemplate = serviceTemplater.getServiceTemplate()
 
             serviceWriteStream.write(jsBeautify(factoryTemplate));
             return serviceWriteStream

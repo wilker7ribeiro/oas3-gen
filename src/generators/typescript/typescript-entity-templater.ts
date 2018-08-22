@@ -10,43 +10,30 @@ import { TypescriptUtil } from "../../util/languages/typescript-util";
 
 export class TypescriptEntityTemplater {
 
-    constructor(public options: any){}
-    getFileName(schemaName: string, schema: SchemaObject): string {
+    constructor(public options: any, public schema: SchemaObject){}
+
+    getFileName(schemaName: string): string {
         return `${schemaName}.ts`
     }
 
-    getEntityTemplate(schemaName: string, schema: SchemaObject) {
+    getEntityTemplate(schemaName: string) {
         let template = ''
-        this.getNamesSchemasUtilizados(schema).forEach(schemaName => {
-            template +=`import { ${schemaName} } from './${schemaName}';\n\n`
+        SchemaMapper.instance.getNamesSchemasFilhosUtilizados(this.schema).forEach(({name}) => {
+            template +=`import { ${name} } from './${name}';\n\n`
         });
         template += `export class ${schemaName.replace(" ", "")} {\n`
-        template += this.getPropriedadesTemplates(schema);
+        template += this.getPropriedadesTemplates();
         return template+'\}';
     }
 
 
-    getPropriedadesTemplates(schemaPai: SchemaObject) {
-        return SchemaMapper.instance.schemaPropertiesRefToArray(schemaPai).map(({name, schemaRef}) => {
+    getPropriedadesTemplates() {
+        return SchemaMapper.instance.schemaPropertiesRefToArray(this.schema).map(({name, schemaRef}) => {
             return this.getTemplateForPropriedade(name, schemaRef);
         }).reduce((prev, current) => prev + current, "")
     }
 
-    getNamesSchemasUtilizados(schemaPai: SchemaObject): string[] {
-        var schemasUtilizados: string[] = [];
-        SchemaMapper.instance.schemaPropertiesRefToArray(schemaPai)
-        .forEach(({name, schemaRef}) => {
-            const refName =  CoreMapper.getNameFromReferenceIfExists(schemaRef);
-            if(refName) return schemasUtilizados.push(refName)
 
-            const schema = CoreMapper.instance.getObjectMaybeRef(schemaRef);
-            if(DataTypesUtil.getSchemaDataType(schema) === DataTypesEnum.ARRAY){
-                const typeName = CoreMapper.getNameFromReferenceIfExists(schema.items);
-                if(typeName) return schemasUtilizados.push(typeName)
-            }
-        })
-        return schemasUtilizados;
-    }
 
     getTemplateForPropriedade(name: string, propriedade: SchemaObject | ReferenceObject): string {
         // return '';

@@ -7,15 +7,15 @@ import { DataTypesUtil } from "../../util/data-types-util";
 import { DataTypesEnum } from "../../util/data-types-enum";
 
 export class AngularJsServiceTemplater {
-
-    getFileName(tagDefinition: TagDefinition): string {
-        return `${tagDefinition.name}-service.js`
+    constructor(public tagDefinition: TagDefinition) {}
+    getFileName(): string {
+        return `${this.tagDefinition.name}-service.js`
     }
 
-    getServiceTemplate(tagDefinition: TagDefinition) {
+    getServiceTemplate() {
 
-        const serviceName = StringUtil.dashToUpperCamelCase(tagDefinition.name)
-        const metodosName = this.getAllMetodosName(tagDefinition);
+        const serviceName = StringUtil.dashToUpperCamelCase(this.tagDefinition.name)
+        const metodosName = this.getAllMetodosName();
 
         return `;
         (function() {
@@ -33,13 +33,13 @@ export class AngularJsServiceTemplater {
 
                 ${ metodosName.map(metodosName => `this.${metodosName} = ${metodosName}`).join('\n')}
                     
-                ${ tagDefinition.paths.map(pathDefinition => this.getTemplateForApi(pathDefinition)).join('\n')}                    
+                ${ this.tagDefinition.paths.map(pathDefinition => this.getTemplateForApi(pathDefinition)).join('\n')}                    
             }   
         }());`
     }
 
-    getAllMetodosName(tagDefinition: TagDefinition): string[] {
-        return tagDefinition.paths.map(pathDefinition => this.getMetodoName(pathDefinition));
+    getAllMetodosName(): string[] {
+        return this.tagDefinition.paths.map(pathDefinition => this.getMetodoName(pathDefinition));
     }
 
     urlToMetodoName(url:string){
@@ -101,14 +101,12 @@ export class AngularJsServiceTemplater {
 
     getRestangularFinalParameter(pathDefinition: PathDefinition, bodyVariableName: string): string {
         // if(pathDefinition.method === PathDefinitionHTTPMethod.PUT && bodyVariableName)
-        const queryParams = pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'query') as ParameterObject[];
-        const cookieParams = pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'cookie') as ParameterObject[];
-        const headersParams = pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'header') as ParameterObject[];;
-        if(queryParams.length) {
+        const queryParams = PathMapper.getQueryParams(pathDefinition);
+        if(pathDefinition.hasQueryParams) {
             if(bodyVariableName){
-                return `${bodyVariableName},${queryParams? `${this.getQueryParamsAsStringfyObj(queryParams)}`: ``} `
+                return `${bodyVariableName},${pathDefinition.hasQueryParams? `${this.getQueryParamsAsStringfyObj(queryParams)}`: ``} `
             } else {
-                return `${queryParams? `${this.getQueryParamsAsStringfyObj(queryParams)}`: ``}`
+                return `${pathDefinition.hasQueryParams? `${this.getQueryParamsAsStringfyObj(queryParams)}`: ``}`
             }
         }
         return bodyVariableName

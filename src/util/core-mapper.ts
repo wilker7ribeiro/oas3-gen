@@ -25,7 +25,8 @@ export class CoreMapper {
         return obj as T;
     }
 
-    static getNameFromReferenceIfExists<T>(obj: T | ReferenceObject): string{
+    static getNameFromReferenceIfExists<T>(obj?: T | ReferenceObject): string{
+        if(!obj) return "";
         if(CoreMapper.isReference(obj)) return CoreMapper.getNameFromReference((obj as any)['$ref']);
         return "";
     }

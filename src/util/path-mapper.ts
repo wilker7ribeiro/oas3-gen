@@ -1,4 +1,4 @@
-import { OpenAPIObject, ReferenceObject, TagObject, PathsObject, OperationObject, ParameterObject, PathItemObject, SchemaObject, ResponseObject } from "openapi3-ts";
+import { OpenAPIObject, ReferenceObject, TagObject, PathsObject, OperationObject, ParameterObject, PathItemObject, SchemaObject, ResponseObject, ContentObject, MediaTypeObject } from "openapi3-ts";
 import { CoreMapper } from "./core-mapper";
 import { SchemaMapper } from "./schema-mapper";
 
@@ -76,8 +76,8 @@ export class PathMapper {
     getSchemaOrRefFromBodyJsonParameter(path: OperationObject): SchemaObject | ReferenceObject | undefined{
         if(!path.requestBody) return;
         const requestBody = CoreMapper.instance.getObjectMaybeRef(path.requestBody);
-        if(!requestBody.content || !requestBody.content['application/json']) return;
-        return requestBody.content['application/json'].schema
+        if(!requestBody.content || !this.getResponseContent(requestBody.content)) return;
+        return (this.getResponseContent(requestBody.content) || {}).schema
     }
 
     getPathDefinitionByMethod(method: PathDefinitionHTTPMethod, url: string, paths: PathsObject): PathDefinition {
@@ -87,7 +87,10 @@ export class PathMapper {
             url,
             path: path,
             name: path ? path.operationId! : "",
-            schemaResponse: this.getSchemaOrRefFromPathResponseJson(path)
+            schemaResponse: this.getSchemaOrRefFromPathResponseJson(path),
+            hasHeaderParams: path.parameters!.some(param => (param as ParameterObject).in === 'header'),
+            hasQueryParams: path.parameters!.some(param => (param as ParameterObject).in === 'query'),
+            hasCookieParams: path.parameters!.some(param => (param as ParameterObject).in === 'cookie')
         }
     }
 
@@ -103,9 +106,27 @@ export class PathMapper {
         let happyResponse: ResponseObject = path.responses['200'] || path.responses['default']
         if(happyResponse){
             happyResponse = CoreMapper.instance.getObjectMaybeRef(happyResponse);
-            return ((happyResponse.content || {})['application/json'] || {}).schema!
+            return (this.getResponseContent(happyResponse.content || {}) || {}).schema!
         }
     }
+
+    private getResponseContent(content: ContentObject): MediaTypeObject | undefined {
+        if(content['application/json'] ) return content['application/json'] 
+        if(content['*/*'] ) return content['*/*'] 
+    }
+
+    static getQueryParams(pathDefinition: PathDefinition): ParameterObject[] {
+        return pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'query') as ParameterObject[];
+    }
+    static  getCookieParams(pathDefinition: PathDefinition): ParameterObject[] {
+        return pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'cookie') as ParameterObject[];
+    }
+    static  getHeaderParams(pathDefinition: PathDefinition): ParameterObject[] {
+        return pathDefinition.path.parameters!.filter(param => (param as ParameterObject).in === 'header') as ParameterObject[];
+    }
+    
+        
+        
 
 
 
@@ -116,7 +137,10 @@ export interface PathDefinition {
     method: PathDefinitionHTTPMethod
     path: OperationObject
     name: string,
-    schemaResponse?: SchemaObject | ReferenceObject
+    schemaResponse?: SchemaObject | ReferenceObject,
+    hasHeaderParams: boolean,
+    hasQueryParams: boolean,
+    hasCookieParams: boolean
 }
 
 export interface TagDefinition {

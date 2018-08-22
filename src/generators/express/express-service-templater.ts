@@ -6,17 +6,18 @@ import { JavascriptUtil } from "../../util/languages/javascript-util";
 
 export class ExpressServiceTemplater {
 
-    constructor(public options: any){}
-    getFileName(tagDefinition: TagDefinition): string {
-        return `${tagDefinition.name}-service.js`
+    constructor(public options: any, public tagDefinition: TagDefinition){}
+
+    getFileName(): string {
+        return `${this.tagDefinition.name}-service.js`
     }
 
-    getServiceTemplate(tagDefinition: TagDefinition) {
+    getServiceTemplate() {
 
         return `module.exports = function(app){
 
             ${
-                tagDefinition.paths.map(pathDefinition => this.getExpressFunctionTemplateForPath(pathDefinition)).join('\n\n')
+                this.tagDefinition.paths.map(pathDefinition => this.getExpressFunctionTemplateForPath(pathDefinition)).join('\n\n')
             }
         }`
     }
