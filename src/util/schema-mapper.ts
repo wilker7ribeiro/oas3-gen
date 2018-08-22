@@ -61,12 +61,12 @@ export class SchemaMapper {
         return schema;
     }
 
-    schemaPropertiesToArray(schema: SchemaObject):{name: string, schema: SchemaObject}[]{
+    schemaPropertiesRefToArray(schema: SchemaObject):{name: string, schemaRef: SchemaObject | ReferenceObject}[]{
         if(!schema.properties) schema.properties = {};
         return Object.keys(schema.properties).map(schemaName => {
             return {
                 name: schemaName,
-                schema: schema.properties![schemaName]
+                schemaRef: schema.properties![schemaName]
             }
         })
     }

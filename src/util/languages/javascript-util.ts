@@ -37,8 +37,8 @@ export class JavascriptUtil {
             if(actualDeepLevel >= maxDeepLevel) return null
                 var obj:any = {}
                 SchemaMapper.instance
-                    .schemaPropertiesToArray(schema)
-                    .forEach(({ name, schema }) => {
+                    .schemaPropertiesRefToArray(schema)
+                    .forEach(({ name, schemaRef }) => {
                         obj[name] = this.getMockedValue(schema, name, maxDeepLevel, actualDeepLevel + 1);
                     })
                 return obj;
@@ -60,7 +60,7 @@ export class JavascriptUtil {
         ].includes(dataType)
     }
 
-    static getInitializationValue(schema: SchemaObject) {
+    static getInitializationValue(schema: SchemaObject ): any {
         const datatype = DataTypesUtil.getSchemaDataType(schema);
         switch (datatype) {
             case DataTypesEnum.ARRAY:

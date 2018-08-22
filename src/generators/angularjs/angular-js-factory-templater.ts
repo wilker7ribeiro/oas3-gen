@@ -1,6 +1,6 @@
-import { SchemaObject } from "openapi3-ts";
-import { SchemaMapper } from "../../../util/schema-mapper";
-import { JavascriptUtil } from "../../../util/languages/javascript-util";
+import { SchemaObject, ReferenceObject } from "openapi3-ts";
+import { SchemaMapper } from "../../util/schema-mapper";
+import { JavascriptUtil } from "../../util/languages/javascript-util";
 
 export class AngularJsFactoryTemplater {
 
@@ -24,7 +24,7 @@ export class AngularJsFactoryTemplater {
                 function ${schemaName}(){
                     ${
                         SchemaMapper.instance
-                        .schemaPropertiesToArray(schema)
+                        .schemaPropertiesRefToArray(schema)
                         .map(property => this.getPropertyTemplate(property))
                         .join('\n')
                     }
@@ -52,7 +52,7 @@ export class AngularJsFactoryTemplater {
                 function ${schemaName}(){
                     ${
                         SchemaMapper.instance
-                        .schemaPropertiesToArray(schema)
+                        .schemaPropertiesRefToArray(schema)
                         .map(property => this.getPropertyTemplate(property))
                         .join('\n')
                     }
@@ -63,8 +63,8 @@ export class AngularJsFactoryTemplater {
         }());`
     }
 
-    private getPropertyTemplate({name, schema}: {name: string, schema: SchemaObject}){
-        return `this.${name} = ${JavascriptUtil.stringfyValue(JavascriptUtil.getInitializationValue(schema))}`
+    private getPropertyTemplate({name, schemaRef}: {name: string, schemaRef: SchemaObject | ReferenceObject}){
+        return `this.${name} = ${JavascriptUtil.stringfyValue(JavascriptUtil.getInitializationValue(schemaRef))}`
     }
 
 }

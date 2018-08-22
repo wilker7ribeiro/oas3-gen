@@ -9,12 +9,13 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/dist/index.js",
+            "sourceMaps": true,
             "args": [
-                "express",
+                "typescript",
                 "-f",
                 "${workspaceFolder}/openApi3.json",
                 "-d",
-                "${workspaceFolder}/generated/express"
+                "${workspaceFolder}/generated/typescript"
             ],
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"

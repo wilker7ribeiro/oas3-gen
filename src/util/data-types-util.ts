@@ -1,10 +1,11 @@
 import { SchemaObject, ReferenceObject } from "openapi3-ts";
 import { DataTypesEnum } from "./data-types-enum";
+import { CoreMapper } from "./core-mapper";
 
 export class DataTypesUtil {
 
     static getSchemaDataType(schemaRef: SchemaObject | ReferenceObject): DataTypesEnum {
-        if('$ref' in schemaRef) return DataTypesEnum.OBJECT;
+        if('$ref' in schemaRef) return this.getSchemaDataType(CoreMapper.instance.getObjectMaybeRef(schemaRef));
         const schema = schemaRef as SchemaObject;
         if(schema.type === 'array'){
             return DataTypesEnum.ARRAY;

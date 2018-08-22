@@ -1,12 +1,12 @@
 
 import * as path from "path";
 import { OpenAPIObject } from "openapi3-ts";
-import { AngularJsFactoryTemplater } from "./factory/angular-js-factory-templater";
+import { AngularJsFactoryTemplater } from "./angular-js-factory-templater";
 import { SchemaMapper } from "../../util/schema-mapper";
 import { mkdirsSync, createWriteStream, WriteStream } from 'fs-extra';
 import { Command, option } from "commander";
 import { CommandConfigurator, CommandFlagConfig } from "../../command-configurator";
-import { AngularJsServiceTemplater } from "./factory/angular-js-service-templater";
+import { AngularJsServiceTemplater } from "./angular-js-service-templater";
 import { PathMapper } from "../../util/path-mapper";
 var jsBeautify = require('js-beautify').js_beautify
 

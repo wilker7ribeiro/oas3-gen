@@ -3,3 +3,4 @@ dist
 generated/angularjs/factory
 generated/angularjs/service
 generated/express/service
+generated/typescript

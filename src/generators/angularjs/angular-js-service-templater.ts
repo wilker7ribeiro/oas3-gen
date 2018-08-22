@@ -1,10 +1,10 @@
-import { TagDefinition, PathDefinition, PathMapper, PathDefinitionHTTPMethod } from "../../../util/path-mapper";
-import { StringUtil } from "../../../util/string-util";
+import { TagDefinition, PathDefinition, PathMapper, PathDefinitionHTTPMethod } from "../../util/path-mapper";
+import { StringUtil } from "../../util/string-util";
 import { ParameterObject } from "openapi3-ts";
-import { SchemaMapper } from "../../../util/schema-mapper";
-import { CoreMapper } from "../../../util/core-mapper";
-import { DataTypesUtil } from "../../../util/data-types-util";
-import { DataTypesEnum } from "../../../util/data-types-enum";
+import { SchemaMapper } from "../../util/schema-mapper";
+import { CoreMapper } from "../../util/core-mapper";
+import { DataTypesUtil } from "../../util/data-types-util";
+import { DataTypesEnum } from "../../util/data-types-enum";
 
 export class AngularJsServiceTemplater {
 

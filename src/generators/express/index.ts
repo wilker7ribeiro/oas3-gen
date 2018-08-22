@@ -2,7 +2,7 @@ import { CommandConfigurator, CommandFlagConfig } from "../../command-configurat
 import { WriteStream, mkdirsSync, createWriteStream } from "fs-extra";
 import { resolve } from "path";
 import { PathMapper } from "../../util/path-mapper";
-import { ExpressServiceTemplater } from "./services/express-service-templater";
+import { ExpressServiceTemplater } from "./express-service-templater";
 
 
 var jsBeautify = require('js-beautify').js_beautify
