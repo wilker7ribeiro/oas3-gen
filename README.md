@@ -1,9 +1,9 @@
 # Open Api Specification 3 Generator
 
-Um gerenciador de geradores de código utilizando a especificação [open api 3].(https://github.com/OAI/OpenAPI-Specification)
+Um gerenciador de geradores de código utilizando a especificação [open api 3](https://github.com/OAI/OpenAPI-Specification).
 
 ## Installation
-Insalação utilizando o npm:
+Instalação utilizando o npm:
 ```
 npm install -g oas3-gen
 ```
