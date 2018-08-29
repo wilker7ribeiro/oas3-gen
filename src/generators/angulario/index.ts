@@ -21,7 +21,6 @@ export class AngularIoGeneratorCommand implements CommandConfigurator {
 
     action(options: any, ...args: any[]) {
         let streams: WriteStream[] = []
-        console.log(options)
         if (options.entity) {
             mkdirsSync(resolve(options.dist, 'entity'));
             streams = streams.concat(

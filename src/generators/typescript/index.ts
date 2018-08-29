@@ -21,7 +21,6 @@ export class TypescriptGeneratorCommand implements CommandConfigurator {
 
     action(options: any, ...args: any[]) {
         let streams: WriteStream[] = []
-        console.log(options)
         mkdirsSync(resolve(options.dist, 'entity'));
         streams = streams.concat(
             this.gerarEntitys(options)

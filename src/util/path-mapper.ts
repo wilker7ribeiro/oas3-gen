@@ -54,8 +54,6 @@ export class PathMapper {
                 }
             })
 
-
-        console.log(this.tagsDefinition)
     }
 
     getParameter(pathParam: (ParameterObject | ReferenceObject)) {

@@ -19,7 +19,6 @@ export class AngularIoServiceTemplater {
 
         const serviceBodyMethods = this.tagDefinition.paths.map(pathDefinition => this.getTemplateForMethod(pathDefinition)).join('\n');
         const listaRefencias = this.getListaReferencias()
-        console.log(listaRefencias);
         return `
         import { Injectable } from '@angular/core';
         import { HttpClient${needHttpParamImport? ', HttpParams' : ''}${needHttpHeaderImport? ', HttpHeaders' : ''} } from '@angular/common/http';

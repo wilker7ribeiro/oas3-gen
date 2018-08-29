@@ -23,7 +23,6 @@ export class ExpressGeneratorCommand implements CommandConfigurator {
 
     action(options: any, ...args: any[]) {
         // let streams: WriteStream[] = []
-        console.log(options)
         mkdirsSync(resolve(options.dist, 'service'));
         // streams = streams.concat(
         this.gerarMocks(options)

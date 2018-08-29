@@ -23,7 +23,6 @@ export class AngularJsGeneratorCommand implements CommandConfigurator {
 
     action(options: any, ...args: any[]) {
         let streams: WriteStream[] = []
-        console.log(options)
         if (options.factory) {
             mkdirsSync(path.resolve(options.dist, 'factory'));
             streams = streams.concat(
