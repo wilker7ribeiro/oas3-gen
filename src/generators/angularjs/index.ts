@@ -52,6 +52,7 @@ export class AngularJsGeneratorCommand implements CommandConfigurator {
             }
 
             factoryWriteStream.write(jsBeautify(factoryTemplate));
+            factoryWriteStream.end();
             return factoryWriteStream
         })
     }
@@ -65,6 +66,7 @@ export class AngularJsGeneratorCommand implements CommandConfigurator {
             let factoryTemplate = serviceTemplater.getServiceTemplate()
 
             serviceWriteStream.write(jsBeautify(factoryTemplate));
+            serviceWriteStream.end();
             return serviceWriteStream
         })
     }

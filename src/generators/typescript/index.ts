@@ -43,6 +43,7 @@ export class TypescriptGeneratorCommand implements CommandConfigurator {
                 "max_preserve_newlines": 2
 
             }));
+            entityWriteStream.end();
             return entityWriteStream
         })
     }

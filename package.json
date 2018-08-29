@@ -9,17 +9,22 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "commander": "^2.17.1",
+    "express": "^4.16.3",
     "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
     "js-beautify": "^1.7.5",
-    "openapi3-ts": "^0.12.0"
+    "openapi3-ts": "^0.12.0",
+    "swagger2openapi": "^3.2.8",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",
+    "@types/express": "^4.16.0",
     "@types/fs-extra": "^5.0.4",
     "@types/glob": "^5.0.35",
     "@types/node": "^10.5.7",
-    "express": "^4.16.3"
+    "@types/yamljs": "^0.2.30"
   }
 }

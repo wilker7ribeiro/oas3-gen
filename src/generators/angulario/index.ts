@@ -50,6 +50,7 @@ export class AngularIoGeneratorCommand implements CommandConfigurator {
                 "brace_style": "collapse-preserve-inline",
                 "max_preserve_newlines": 2
             }));
+            entityWriteStream.end();
             return entityWriteStream
         })
     }
@@ -63,10 +64,11 @@ export class AngularIoGeneratorCommand implements CommandConfigurator {
             let entityTemplate = serviceTemplater.getServiceTemplate()
 
             serviceWriteStream.write(jsBeautify(entityTemplate, {
-                // "preserve_newlines": true,
-                // "brace_style": "collapse-preserve-inline",
-                // "max_preserve_newlines": 2
+                "preserve_newlines": true,
+                "brace_style": "collapse-preserve-inline",
+                "max_preserve_newlines": 2
             }));
+            serviceWriteStream.end();
             return serviceWriteStream
         })
     }
