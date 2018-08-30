@@ -23,16 +23,20 @@ export class AngularIoGeneratorCommand implements CommandConfigurator {
         let streams: WriteStream[] = []
         if (options.entity) {
             mkdirsSync(resolve(options.dist, 'entity'));
+            console.log("Gerando entidades...");
             streams = streams.concat(
                 this.gerarEntity(options)
             );
+            console.log("Entidades geradas...");
         }
 
         if (options.services) {
             mkdirsSync(resolve(options.dist, 'service'));
+            console.log("Gerando services...");
             streams = streams.concat(
                 this.gerarSevices(options)
             );
+            console.log("services geradas...");
         }
     }
 

@@ -25,9 +25,12 @@ export class ExpressGeneratorCommand implements CommandConfigurator {
         // let streams: WriteStream[] = []
         mkdirsSync(resolve(options.dist, 'service'));
         // streams = streams.concat(
+        console.log("Gerando services e mocks...");
         this.gerarMocks(options)
+        console.log("Services e mocks gerados!");
         // );
         if (options.serve) {
+            console.log("Servindo api...");
             this.serveExpress(options)
         }
 

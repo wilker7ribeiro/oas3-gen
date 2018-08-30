@@ -24,17 +24,21 @@ export class AngularJsGeneratorCommand implements CommandConfigurator {
     action(options: any, ...args: any[]) {
         let streams: WriteStream[] = []
         if (options.factory) {
+            console.log("Gerando factorys...");
             mkdirsSync(path.resolve(options.dist, 'factory'));
             streams = streams.concat(
                 this.gerarFactory(options)
             );
+            console.log("Factorys geradas!");
         }
 
         if (options.services) {
+            console.log("Gerando services...");
             mkdirsSync(path.resolve(options.dist, 'service'));
             streams = streams.concat(
                 this.gerarSevices(options)
             );
+            console.log("Services geradas!");
         }
     }
 

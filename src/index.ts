@@ -50,7 +50,7 @@ generators.forEach(generator => {
 
     generatorProgram.action(async (...args: any[]) => {
         let json: any;
-
+        console.log()
         // export to defoult options setter
         if (!generatorProgram.dist) generatorProgram.dist = './oas2-generated';
         // console.log(generatorProgram)
@@ -62,10 +62,13 @@ generators.forEach(generator => {
 
         // export to file getter
         if (generatorProgram.file) {
+            console.log("Recuperando arquivo...")
             const filePath = resolve(process.cwd(), generatorProgram.file);
             if (!existsSync(filePath)) return console.error('Arquivo não encontrado:', generatorProgram.file)
             if (generatorProgram.yaml) {
-                json = yamlToJson(readFileSync(filePath).toString());
+                var string = readFileSync(filePath).toString();
+                console.log("Convertendo arquivo de Yaml para JSON...")
+                json = yamlToJson(string);
             } else {
                 json = require(filePath);
             }
@@ -73,9 +76,15 @@ generators.forEach(generator => {
         // export to url getter
         // busca caso seja um request get
         } else if (generatorProgram.url) {
+            console.log(`Buscando arquivo em GET - ${generatorProgram.url}`)
             try {
                 const response = await axios.get(generatorProgram.url);
-                json = generatorProgram.yaml ? yamlToJson(response.data) : response.data;
+                if(generatorProgram.yaml){
+                    console.log("Convertendo arquivo de Yaml para JSON...")
+                    json = yamlToJson(response.data)
+                } else {
+                    json =  response.data;
+                }
                 json = typeof json === 'object' ? json : JSON.parse(json);
             } catch (err) {
                 return console.error(`Erro ao buscar arquivo em GET - ${generatorProgram.url}:\n${err.name}: ${err.message}`);
@@ -85,11 +94,13 @@ generators.forEach(generator => {
         // export to swg2 converter
         // Converte de swg2 para openApi3
         if (generatorProgram.swg2) {
+            console.log("Convertendo arquivo de swagger2 para open-api-3...")
             json = await new Promise((resolve, reject) => swagger2openapi.convertObj(json, {}, (err: any, options: any) => err ? reject(err) : resolve(options.openapi)));
         }
 
         // export to validation
         try {
+            console.log("Validando json...");
             const validationResult: any = oasValidator.validateSync(json, {})
         }  catch (err) {
             return console.error(`Erro ao validar o arquivo:\n${err.name}: ${err.message}`);
@@ -99,8 +110,9 @@ generators.forEach(generator => {
         CoreMapper.init(json);
         SchemaMapper.init(json);
         PathMapper.init(json);
-
+        console.log("Executando...");
         generator.action(generatorProgram, ...args)
+        console.log("Sucesso!");
     });
 
 })
