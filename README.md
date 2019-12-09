@@ -15,9 +15,9 @@ Exemplos:
 oas3-gen angular -f petstore-expanded.json
 oas3-gen angular -y -f petstore-expanded.yaml
 oas3-gen angular -y -u https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml 
-oas3-gen angular -swg2 -f petstore-expanded-swg2.json
-oas3-gen angular -swg2 -u https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-expanded.json
-oas3-gen angular -swg2 -y -u https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore-expanded.yaml
+oas3-gen angular --swg2 -f petstore-expanded-swg2.json
+oas3-gen angular --swg2 -u https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-expanded.json
+oas3-gen angular --swg2 -y -u https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore-expanded.yaml
 ```
 
 
